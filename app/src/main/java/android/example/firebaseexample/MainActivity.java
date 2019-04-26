@@ -17,13 +17,18 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import org.w3c.dom.Text;
 
-public class MainActivity extends AppCompatActivity {
+import java.util.Observable;
+import java.util.Observer;
 
-    private DatabaseReference databaseReference;
+public class MainActivity extends AppCompatActivity implements Observer {
+
     EditText editText;
     Button button;
     private ChildEventListener childEventListener;
     TextView textView;
+    Database database = new Database();
+    private DatabaseReference databaseReference;
+    Model model = new Model();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,15 +38,15 @@ public class MainActivity extends AppCompatActivity {
         button = findViewById(R.id.button);
         textView = findViewById(R.id.textView);
 
-        databaseReference = FirebaseDatabase.getInstance().getReference().child("text");
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                databaseReference.push().setValue(editText.getText().toString());
+                model.addLine(editText.getText().toString());
                 editText.setText("");
             }
         });
+        model.addObserver(this);
         attachDatabaseReadListener();
 
     }
@@ -77,6 +82,14 @@ public class MainActivity extends AppCompatActivity {
                 }
             };
         }
+        databaseReference = FirebaseDatabase.getInstance().getReference().child("text");
+
         databaseReference.addChildEventListener(childEventListener);
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+        String text = model.getLastLine();
+        textView.append(text + "\n");
     }
 }
