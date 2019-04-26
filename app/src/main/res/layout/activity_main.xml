@@ -23,4 +23,10 @@
         android:text="Push Text"
         tools:layout_editor_absoluteY="397dp" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView"
+        android:hint="Loaded data here"/>
+
 </LinearLayout>
